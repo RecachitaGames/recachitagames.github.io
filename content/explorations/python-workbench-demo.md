@@ -1,6 +1,6 @@
 ---
 title: Python Workbench — Demo
-date: 2025-03
+date: 2025-03-03
 section: Explorations
 ---
 
