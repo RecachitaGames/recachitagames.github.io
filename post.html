@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post — Sith</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- SIDE PANEL -->
+  <div class="panel-overlay" id="panel-overlay"></div>
+  <nav class="side-panel" id="side-panel" aria-label="Navigation">
+    <div class="panel-header">
+      <span style="font-family:var(--font-display);font-size:0.75rem;color:var(--yellow);text-transform:uppercase;letter-spacing:0.1em;">Menu</span>
+      <button class="panel-close" id="panel-close" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-label">Sections</div>
+      <div class="panel-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="journal.html">Journal</a>
+        <a href="games.html">Games</a>
+        <a href="explorations.html">Explorations</a>
+      </div>
+    </div>
+
+    <div class="panel-section" id="toc-section">
+      <div class="panel-section-label">This page</div>
+      <div class="panel-toc" id="toc"></div>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <button class="burger-btn" id="burger-btn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="site-title">Sith</a>
+  </header>
+
+  <!-- MAIN -->
+  <main class="site-wrapper">
+    <div class="main-content">
+
+      <div class="post-meta">
+        <span id="post-section">—</span>
+        <span id="post-date">—</span>
+      </div>
+
+      <h1 class="post-title" id="post-title">Loading…</h1>
+      <div class="post-divider"></div>
+
+      <!-- Markdown renders here -->
+      <div id="md-content"></div>
+
+    </div>
+
+    <footer class="site-footer">
+      <a href="index.html">← Back</a> &nbsp;&nbsp; Sith &mdash; <span id="year"></span>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Read ?md= param and set it on the div before main.js runs
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const md = params.get('md');
+      if (md) {
+        const el = document.getElementById('md-content');
+        el.dataset.md = md;
+      }
+    })();
+  </script>
+  <script src="main.js"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
