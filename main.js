@@ -147,6 +147,7 @@ async function loadMarkdown() {
     const dateEl    = document.getElementById('post-date');
     if (sectionEl) sectionEl.textContent = meta.section || inferSection(src);
     if (dateEl)    dateEl.textContent    = meta.date    || '';
+    console.log('[site] meta:', JSON.stringify(meta), 'sectionEl:', !!document.getElementById('post-section'), 'dateEl:', !!document.getElementById('post-date'));
 
     // Protect <textarea> content from marked before parsing
     const textareas = [];
