@@ -42,6 +42,18 @@ document.querySelectorAll('.panel-nav a').forEach(a => {
 })();
 
 /* ============================================
+   SLUGIFY — accent-safe anchor IDs
+   ============================================ */
+function slugify(text) {
+  const accents = { a:'áàäâã', e:'éèëê', i:'íìïî', o:'óòöôõ', u:'úùüû', n:'ñ', c:'ç' };
+  let s = text.trim().toLowerCase();
+  for (const [base, chars] of Object.entries(accents)) {
+    s = s.replace(new RegExp('[' + chars + ']', 'g'), base);
+  }
+  return s.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'section';
+}
+
+/* ============================================
    TABLE OF CONTENTS
    ============================================ */
 function buildTOC(contentEl, tocEl) {
@@ -60,7 +72,7 @@ function buildTOC(contentEl, tocEl) {
   headings.forEach((h, i) => {
     // Ensure heading has an id
     if (!h.id) {
-      h.id = 'h-' + h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 50);
+      h.id = slugify(h.textContent);
       // Deduplicate
       const same = document.querySelectorAll('#' + CSS.escape(h.id));
       if (same.length > 1) h.id += '-' + i;
@@ -78,46 +90,100 @@ function buildTOC(contentEl, tocEl) {
 }
 
 /* ============================================
+   FRONTMATTER PARSER
+   ============================================ */
+function parseFrontmatter(text) {
+  const meta = {};
+  let body = text;
+  if (text.startsWith('---')) {
+    const end = text.indexOf('\n---', 3);
+    if (end !== -1) {
+      const block = text.slice(3, end).trim();
+      block.split('\n').forEach(line => {
+        const colon = line.indexOf(':');
+        if (colon === -1) return;
+        const key = line.slice(0, colon).trim();
+        const val = line.slice(colon + 1).trim().replace(/^['"]|['"]$/g, '');
+        meta[key] = val;
+      });
+      body = text.slice(end + 4).trimStart();
+    }
+  }
+  return { meta, body };
+}
+
+function inferSection(src) {
+  const parts = src.split('/');
+  if (parts.length >= 2) {
+    const s = parts[parts.length - 2];
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+  return '';
+}
+
+/* ============================================
    MARKDOWN LOADER
-   Loads a .md file and renders it into #md-content
-   Usage: add data-md="path/to/file.md" on <div id="md-content">
    ============================================ */
 async function loadMarkdown() {
   const el = document.getElementById('md-content');
   if (!el) return;
-
   const src = el.dataset.md;
   if (!src) return;
 
   try {
     const res = await fetch(src);
     if (!res.ok) throw new Error('Could not load ' + src);
-    const text = await res.text();
+    const raw = await res.text();
 
-    // marked must be loaded before main.js
     if (typeof marked === 'undefined') {
       el.innerHTML = '<p>Error: marked.js not loaded.</p>';
       return;
     }
 
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
+    const { meta, body } = parseFrontmatter(raw);
+
+    // Fill post-meta fields
+    const sectionEl = document.getElementById('post-section');
+    const dateEl    = document.getElementById('post-date');
+    if (sectionEl) sectionEl.textContent = meta.section || inferSection(src);
+    if (dateEl)    dateEl.textContent    = meta.date    || '';
+
+    // Protect <textarea> content from marked before parsing
+    const textareas = [];
+    const safeBody = body.replace(
+      /<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi,
+      (match, attrs, content) => {
+        const idx = textareas.length;
+        textareas.push(content);
+        return '<textarea' + attrs + ' data-ph="' + idx + '"></textarea>';
+      }
+    );
+
+    marked.setOptions({ breaks: false, gfm: true, html: true });
+    el.innerHTML = marked.parse(safeBody);
+
+    // Restore textarea values (.value avoids HTML interpretation)
+    el.querySelectorAll('textarea[data-ph]').forEach(ta => {
+      const idx = parseInt(ta.dataset.ph, 10);
+      ta.value = textareas[idx].replace(/^\n/, '');
+      ta.removeAttribute('data-ph');
     });
 
-    el.innerHTML = marked.parse(text);
-
-    // Update page title from first h1
-    const h1 = el.querySelector('h1');
-    if (h1) {
-      document.querySelector('.post-title') && (document.querySelector('.post-title').textContent = h1.textContent);
-      h1.remove(); // h1 is shown separately in the template header
+    // Title: frontmatter title > first h1
+    const titleEl = document.querySelector('.post-title');
+    if (meta.title) {
+      if (titleEl) titleEl.textContent = meta.title;
+      document.title = meta.title + ' — Sith';
+    } else {
+      const h1 = el.querySelector('h1');
+      if (h1) {
+        if (titleEl) titleEl.textContent = h1.textContent;
+        document.title = h1.textContent + ' — Sith';
+        h1.remove();
+      }
     }
 
-    // Build TOC after content is ready
     buildTOC(el, document.getElementById('toc'));
-
-    // Activate any embedded workbenches
     initWorkbenches();
 
   } catch (e) {
