@@ -457,17 +457,18 @@ pre code {
 .workbench-run:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .workbench-code {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  background: var(--grey);
-  color: var(--text);
-  border: none;
-  width: 100%;
-  padding: 1rem;
-  resize: vertical;
-  min-height: 120px;
-  outline: none;
-  line-height: 1.6;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    background: var(--grey);
+    color: var(--text);
+    border: none;
+    width: 100%;
+    padding: 1rem;
+    resize: none;
+    overflow: hidden;
+    outline: none;
+    line-height: 1.6;
+    display: block;
 }
 
 .workbench-output {

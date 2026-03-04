@@ -302,6 +302,20 @@ async function getPyodide() {
   });
 }
 
+/* ============================================
+   TEXTAREA AUTO-RESIZE
+   ============================================ */
+function autoResizeTextarea(ta) {
+  if (!ta) return;
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
+}
+
+function enableAutoResize(ta) {
+  autoResizeTextarea(ta); // ajustar al cargar
+  ta.addEventListener('input', () => autoResizeTextarea(ta));
+}
+
 function initWorkbenches() {
   document.querySelectorAll('.workbench').forEach(wb => {
     if (wb.dataset.initialized) return;
@@ -311,6 +325,8 @@ function initWorkbenches() {
     const code   = wb.querySelector('.workbench-code');
     const output = wb.querySelector('.workbench-output');
     if (!btn || !code || !output) return;
+
+    enableAutoResize(code);
 
     btn.addEventListener('click', async () => {
       btn.disabled = true;
