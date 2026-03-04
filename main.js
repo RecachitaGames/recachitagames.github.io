@@ -319,27 +319,23 @@ async function loadCodeMirror() {
     const cssLink = document.createElement('link');
     cssLink.rel = 'stylesheet';
     cssLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css';
-    cssLink.integrity = 'sha512-kPKCwnSzjrHdAdOCuhm2LDQNpujF8gd0D/HuY+8F3+EomH5OGiSHQnDPGQ69yEH0bQ+0jbVRRY0J+600vYSNPA==';
     cssLink.crossOrigin = 'anonymous';
     document.head.appendChild(cssLink);
 
     const themeLink = document.createElement('link');
     themeLink.rel = 'stylesheet';
     themeLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css';
-    themeLink.integrity = 'sha512-3dX7gBZSHkFDvXLEeEr9i4hCp3bfCEKwSZuq3X+J9Gd3XO5c2xWQN9eULBvVWcLVFDfbVLLqFKPP0XTLOvwZA==';
     themeLink.crossOrigin = 'anonymous';
     document.head.appendChild(themeLink);
 
     // Load core
     const coreScript = document.createElement('script');
     coreScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js';
-    coreScript.integrity = 'sha512-yIYRmFaPKPpk0rN20ymgV0Wgi9QNoGHdZMMle0oQWV8nEJDB6BA8m32tP3bM3dBs4W+l0J4W4F+hBQZ4I8QPuw==';
     coreScript.crossOrigin = 'anonymous';
     coreScript.onload = () => {
       // Load Python mode
       const pythonScript = document.createElement('script');
       pythonScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js';
-      pythonScript.integrity = 'sha512-vUPjM19ZYJ0o7T2qD5zjg1wT0jPbBbbW6P5u6rA7lnvbaKMFNlK2DvRiQAqRruDigcDFSCXeSclDZFGx8vyPJg==';
       pythonScript.crossOrigin = 'anonymous';
       pythonScript.onload = () => {
         codeMirrorCallbacks.forEach(cb => cb.resolve(window.CodeMirror));
