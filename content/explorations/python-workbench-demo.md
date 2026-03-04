@@ -20,6 +20,7 @@ Edita el código y dale a **Run** (el botón ahora permanece visible en la esqui
     <button class="workbench-run">Run</button>
   </div>
   <textarea class="workbench-code">
+import asyncio
 import random
 
 class Individual:
@@ -164,8 +165,7 @@ async def main():
     else:
         print("No queda nadie para contar la historia.")
 
-if __name__ == "__main__":
-    await main()
+await main()
   </textarea>
   <div class="workbench-output">Output will appear here…</div>
 </div>
