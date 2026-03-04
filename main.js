@@ -277,6 +277,35 @@ let pyodide = null;
 let pyodideLoading = false;
 let pyodideCallbacks = [];
 
+// Scan a block of Python source for top‑level import statements and
+// return an array of package names.  This is intentionally simple –
+// it looks for ``import pkg`` and ``from pkg import ...`` forms and
+// ignores aliases or submodules.  The result is used to pre‑load
+// the corresponding pyodide packages before running user code.
+function extractPackages(pythonSource) {
+  const pkgs = new Set();
+  const lines = pythonSource.split(/\r?\n/);
+  const importRe = /^\s*import\s+(.+)/;
+  const fromRe   = /^\s*from\s+([\w.]+)/;
+
+  lines.forEach(line => {
+    let m = line.match(importRe);
+    if (m) {
+      // "import a, b as c" -> ["a","b"]
+      m[1].split(',').forEach(token => {
+        const name = token.trim().split(/\s+/)[0];
+        if (name) pkgs.add(name.split('.')[0]);
+      });
+    }
+    m = line.match(fromRe);
+    if (m) {
+      const name = m[1].split('.')[0];
+      if (name) pkgs.add(name);
+    }
+  });
+  return Array.from(pkgs);
+}
+
 async function getPyodide() {
   if (pyodide) return pyodide;
   return new Promise((resolve, reject) => {
@@ -361,6 +390,28 @@ async function loadCodeMirror() {
 async function initWorkbenches() {
   const workbenches = document.querySelectorAll('.workbench');
   if (workbenches.length === 0) return; // No workbenches on this page
+
+  // figure out which pyodide packages we should preload based on the
+  // initial contents of the workbench blocks.  this avoids a delay on
+  // the first "Run" click.
+  const pkgsToPreload = new Set();
+  workbenches.forEach(wb => {
+    const codeEl = wb.querySelector('.workbench-code');
+    if (codeEl && !wb.dataset.initialized) {
+      extractPackages(codeEl.value || '').forEach(p => pkgsToPreload.add(p));
+    }
+  });
+
+  if (pkgsToPreload.size > 0) {
+    try {
+      const py = await getPyodide();
+      console.debug('[site] preloading pyodide packages', [...pkgsToPreload]);
+      await py.loadPackage([...pkgsToPreload]);
+    } catch (e) {
+      console.warn('pyodide package preload failed:', e);
+      // continue; we'll still attempt to load on-demand later
+    }
+  }
 
   // Load CodeMirror only if there are workbenches
   const CodeMirror = await loadCodeMirror();
