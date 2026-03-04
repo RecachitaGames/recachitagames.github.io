@@ -16,7 +16,7 @@ Edita el código y dale a **Run** (el botón ahora permanece visible en la esqui
 
 <div class="workbench">
   <div class="workbench-header">
-    <span class="workbench-label">Python 3 — Pyodide</span>
+    <span class="workbench-label">Python 3 workbench</span>
     <button class="workbench-run">Run</button>
   </div>
   <textarea class="workbench-code">
@@ -76,7 +76,7 @@ def generar_piramide_genero(datos, poblacion_total, ancho_maximo=25):
 
 # --- Configuración de datos de ejemplo ---
 # Los porcentajes suelen ser sobre el total de la población
-poblacion_ejemplo = 47000000 
+poblacion_ejemplo = 50000 
 distribucion_genero = {
     "80+":   {"H": 1.2, "M": 2.1},
     "70-79": {"H": 3.5, "M": 4.2},
