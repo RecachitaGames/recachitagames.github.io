@@ -555,3 +555,50 @@ pre code {
   color: var(--text-muted);
   text-decoration: line-through;
 }
+
+
+/* ============================================
+   LOGO — HOME & ABOUT
+   ============================================ */
+.home-logo {
+  display: block;
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  margin: 0 0 2rem 0;
+  border-radius: 4px;
+}
+
+.about-logo {
+  display: block;
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin: 0 0 2.5rem 0;
+  border-radius: 4px;
+}
+
+/* ============================================
+   HOME TAGLINES (bilingüe)
+   ============================================ */
+.home-header .tagline {
+  margin-top: 1rem;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
+.home-header .tagline-en {
+  margin-top: 0.25rem;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
