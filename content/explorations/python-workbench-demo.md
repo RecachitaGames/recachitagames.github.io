@@ -93,9 +93,3 @@ generar_piramide_genero(distribucion_genero, poblacion_ejemplo)
   </textarea>
   <div class="workbench-output">Output will appear here…</div>
 </div>
-
-## Notas
-
-- `import numpy`, `import pandas` etc. funcionan — Pyodide incluye los paquetes científicos principales.
-- El stdout se captura y se muestra en el output. Los errores aparecen en rojo.
-- No hay acceso al filesystem del host.
