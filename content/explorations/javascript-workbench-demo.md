@@ -14,7 +14,7 @@ JavaScript se ejecuta nativamente en el navegador. Es instantáneo y no requiere
 
 Edita el código y dale a **Run** (el botón ahora permanece visible en la esquina superior derecha del bloque de código, incluso al hacer scroll):
 
-<div class="workbench">
+<div class="workbench" data-lang="javascript">
   <div class="workbench-header">
     <span class="workbench-label">JavaScript workbench</span>
     <button class="workbench-run">Run</button>

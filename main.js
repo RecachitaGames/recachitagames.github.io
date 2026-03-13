@@ -487,22 +487,26 @@ async function initWorkbenches() {
     const btn    = wb.querySelector('.workbench-run');
     const code   = wb.querySelector('.workbench-code');
     const output = wb.querySelector('.workbench-output');
+    const lang   = wb.dataset.lang || 'python';
+    const isJS   = lang === 'javascript';
     if (!btn || !code || !output) return;
 
-    // Add interrupt button
-    const interruptBtn = document.createElement('button');
-    interruptBtn.className = 'workbench-run';
-    interruptBtn.textContent = 'Interrupt';
-    interruptBtn.style.marginLeft = '10px';
-    btn.parentNode.insertBefore(interruptBtn, btn.nextSibling);
+    // Add interrupt button (only for Python)
+    if (!isJS) {
+      const interruptBtn = document.createElement('button');
+      interruptBtn.className = 'workbench-run';
+      interruptBtn.textContent = 'Interrupt';
+      interruptBtn.style.marginLeft = '10px';
+      btn.parentNode.insertBefore(interruptBtn, btn.nextSibling);
 
-    if (!interruptBuffer) {
-      interruptBtn.style.display = 'none';
+      if (!interruptBuffer) {
+        interruptBtn.style.display = 'none';
+      }
+
+      interruptBtn.addEventListener('click', () => {
+        interruptPython();
+      });
     }
-
-    interruptBtn.addEventListener('click', () => {
-      interruptPython();
-    });
 
     // Save the original textarea content
     const initialCode = code.value || '';
@@ -530,7 +534,7 @@ async function initWorkbenches() {
     // Initialize CodeMirror with Tab support for indentation
     const editor = CodeMirror(cmContainer, {
       value: initialCode,
-      mode: 'python',
+      mode: isJS ? 'javascript' : 'python',
       theme: 'dracula',
       lineNumbers: true,
       indentUnit: 4,
@@ -566,15 +570,30 @@ async function initWorkbenches() {
       btn.disabled = true;
       btn.textContent = 'Running\u2026';
       output.className = 'workbench-output';
-      output.textContent = 'Running Python code\u2026';
+      output.textContent = isJS ? 'Running JavaScript code\u2026' : 'Running Python code\u2026';
 
       try {
         const src = editor.getValue();
-        const pkgs = extractPackages(src);
-
-        const result = await runPythonInWorker(src, pkgs);
-        output.textContent = result || '(no output)';
-        output.className = 'workbench-output has-output';
+        if (isJS) {
+          let logs = [];
+          const originalLog = console.log;
+          console.log = (...args) => logs.push(args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' '));
+          try {
+            eval(src);
+            output.textContent = logs.join('\n') || '(no output)';
+            output.className = 'workbench-output has-output';
+          } catch (e) {
+            output.textContent = e.message;
+            output.className = 'workbench-output error';
+          } finally {
+            console.log = originalLog;
+          }
+        } else {
+          const pkgs = extractPackages(src);
+          const result = await runPythonInWorker(src, pkgs);
+          output.textContent = result || '(no output)';
+          output.className = 'workbench-output has-output';
+        }
       } catch (err) {
         output.textContent = err.message;
         output.className = 'workbench-output error';
