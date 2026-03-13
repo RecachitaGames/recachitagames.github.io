@@ -1,4 +1,4 @@
-# SpeculativeGameDev
+# Recachita Games
 
 Static site. No build step. Works directly from the filesystem or GitHub Pages.
 
