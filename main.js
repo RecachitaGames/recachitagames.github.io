@@ -273,9 +273,75 @@ async function loadMarkdown() {
 /* ============================================
    PYODIDE WORKBENCHES
    ============================================ */
-let pyodide = null;
-let pyodideLoading = false;
+let pyodideWorker = null;
+let pyodideWorkerReady = false;
 let pyodideCallbacks = [];
+let interruptBuffer = null;
+
+// keep a global record of packages we've asked pyodide to load
+const pyodidePackagesLoaded = new Set();
+
+function initPyodideWorker() {
+  if (pyodideWorker) return;
+  interruptBuffer = new Int32Array(new SharedArrayBuffer(4));
+  pyodideWorker = new Worker('./pyodide-worker.js', { type: 'module' });
+  pyodideWorker.postMessage({ type: 'init', interruptBuffer });
+
+  pyodideWorker.onmessage = (event) => {
+    if (event.data.type === 'input_request') {
+      // Find the current workbench input
+      const workbenches = document.querySelectorAll('.workbench');
+      workbenches.forEach(wb => {
+        const inputContainer = wb.querySelector('.workbench-input-container');
+        const inputField = wb.querySelector('.workbench-input-field');
+        if (inputContainer && inputField) {
+          inputContainer.style.display = 'flex';
+          inputField.focus();
+          inputField.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+              const value = inputField.value;
+              inputField.value = '';
+              inputContainer.style.display = 'none';
+              pyodideWorker.postMessage({ type: 'input_response', value });
+            }
+          };
+        }
+      });
+      return;
+    }
+
+    const { id, result, error } = event.data;
+    const callback = pyodideCallbacks.find(cb => cb.id === id);
+    if (callback) {
+      pyodideCallbacks = pyodideCallbacks.filter(cb => cb.id !== id);
+      if (error) {
+        callback.reject(new Error(error));
+      } else {
+        callback.resolve(result);
+      }
+    }
+  };
+
+  pyodideWorkerReady = true;
+}
+
+function runPythonInWorker(code, packages = []) {
+  return new Promise((resolve, reject) => {
+    if (!pyodideWorkerReady) {
+      initPyodideWorker();
+    }
+    const id = Date.now() + Math.random();
+    pyodideCallbacks.push({ id, resolve, reject });
+    pyodideWorker.postMessage({ id, code, packages });
+  });
+}
+
+function interruptPython() {
+  if (interruptBuffer) {
+    Atomics.store(interruptBuffer, 0, 2); // SIGINT
+    Atomics.notify(interruptBuffer, 0);
+  }
+}
 
 // Python standard library modules (built-in to Pyodide, no need to load)
 const STDLIB_MODULES = new Set([
@@ -342,31 +408,6 @@ function extractPackages(pythonSource) {
   return Array.from(pkgs);
 }
 
-async function getPyodide() {
-  if (pyodide) return pyodide;
-  return new Promise((resolve, reject) => {
-    pyodideCallbacks.push({ resolve, reject });
-    if (pyodideLoading) return;
-    pyodideLoading = true;
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js';
-    script.onload = async () => {
-      try {
-        pyodide = await loadPyodide();
-        pyodideCallbacks.forEach(cb => cb.resolve(pyodide));
-      } catch (e) {
-        pyodideCallbacks.forEach(cb => cb.reject(e));
-      }
-      pyodideCallbacks = [];
-    };
-    script.onerror = () => {
-      pyodideCallbacks.forEach(cb => cb.reject(new Error('Failed to load Pyodide')));
-      pyodideCallbacks = [];
-    };
-    document.head.appendChild(script);
-  });
-}
-
 /* ============================================
    CODEMIRROR LAZY LOADER
    ============================================ */
@@ -430,29 +471,8 @@ async function initWorkbenches() {
   const workbenches = document.querySelectorAll('.workbench');
   if (workbenches.length === 0) return; // No workbenches on this page
 
-  // figure out which pyodide packages we should preload based on the
-  // initial contents of the workbench blocks.  this avoids a delay on
-  // the first "Run" click.
-  const pkgsToPreload = new Set();
-  workbenches.forEach(wb => {
-    const codeEl = wb.querySelector('.workbench-code');
-    if (codeEl && !wb.dataset.initialized) {
-      extractPackages(codeEl.value || '').forEach(p => pkgsToPreload.add(p));
-    }
-  });
-
-  if (pkgsToPreload.size > 0) {
-    try {
-      const py = await getPyodide();
-      console.debug('[site] preloading pyodide packages', [...pkgsToPreload]);
-      await py.loadPackage([...pkgsToPreload]);
-      // record them so we don't reload later
-      pkgsToPreload.forEach(p => pyodidePackagesLoaded.add(p));
-    } catch (e) {
-      console.warn('pyodide package preload failed:', e);
-      // continue; we'll still attempt to load on-demand later
-    }
-  }
+  // Initialize worker
+  initPyodideWorker();
 
   // Load CodeMirror only if there are workbenches
   const CodeMirror = await loadCodeMirror();
@@ -465,6 +485,17 @@ async function initWorkbenches() {
     const code   = wb.querySelector('.workbench-code');
     const output = wb.querySelector('.workbench-output');
     if (!btn || !code || !output) return;
+
+    // Add interrupt button
+    const interruptBtn = document.createElement('button');
+    interruptBtn.className = 'workbench-run';
+    interruptBtn.textContent = 'Interrupt';
+    interruptBtn.style.marginLeft = '10px';
+    btn.parentNode.insertBefore(interruptBtn, btn.nextSibling);
+
+    interruptBtn.addEventListener('click', () => {
+      interruptPython();
+    });
 
     // Save the original textarea content
     const initialCode = code.value || '';
@@ -526,117 +557,24 @@ async function initWorkbenches() {
 
     btn.addEventListener('click', async () => {
       btn.disabled = true;
-      btn.textContent = 'Loading\u2026';
+      btn.textContent = 'Running\u2026';
       output.className = 'workbench-output';
-      output.textContent = 'Initializing Python runtime\u2026';
+      output.textContent = 'Running Python code\u2026';
 
       try {
-        const py = await getPyodide();
-
-        // Detect imports in current editor content and load any newly
-        // referenced pyodide packages before executing the code.  This
-        // prevents the common case where a user adds `import pkg` and
-        // then immediately runs, causing an error because the package
-        // wasn't preloaded.
         const src = editor.getValue();
         const pkgs = extractPackages(src);
-        const toLoad = pkgs.filter(p => !pyodidePackagesLoaded.has(p));
 
-        if (toLoad.length > 0) {
-          output.textContent = 'Loading packages: ' + toLoad.join(', ');
-          try {
-            await py.loadPackage(toLoad);
-            toLoad.forEach(p => pyodidePackagesLoaded.add(p));
-          } catch (pkgErr) {
-            // If package loading fails, surface the error but still
-            // attempt to run the user's code (it may not need the
-            // failed package at runtime).
-            output.textContent = 'Package load error: ' + pkgErr.message;
-            output.className = 'workbench-output error';
-            btn.textContent = 'Run';
-            btn.disabled = false;
-            return;
-          }
-        }
-
-        btn.textContent = 'Running\u2026';
-        await py.runPythonAsync('import sys, io\n_cap = io.StringIO()\nsys.stdout = _cap');
-        
-        // Set up input field for Python input() function
-        inputContainer.style.display = 'none';
-        inputField.value = '';
-        window._workbenchInputValue = null;
-        window._workbenchInputReady = false;
-        
-        // Handle Enter key in input field
-        inputField.onkeypress = (e) => {
-          if (e.key === 'Enter') {
-            window._workbenchInputValue = inputField.value;
-            window._workbenchInputReady = true;
-            inputField.value = '';
-          }
-        };
-        
-        // Replace the built-in input() with a version that uses the input container
-        await py.runPythonAsync(`
-import builtins
-import js
-import time
-
-def _workbench_input(prompt=''):
-    if prompt:
-        print(prompt, end='', flush=True)
-    
-    # Show the input field in JavaScript
-    js.window._workbenchInputReady = False
-    js.window._workbenchInputValue = None
-    js.window._showWorkbenchInput()
-    
-    # Wait for input (polling with sleep to allow JS events to process)
-    while not js.window._workbenchInputReady:
-        time.sleep(0.05)
-    
-    result = str(js.window._workbenchInputValue or '')
-    print(result)  # Echo the input
-    js.window._hideWorkbenchInput()
-    
-    return result
-
-builtins.input = _workbench_input
-`);
-        
-        // Functions for showing/hiding the input container
-        window._showWorkbenchInput = () => {
-          inputContainer.style.display = 'flex';
-          inputField.focus();
-        };
-        
-        window._hideWorkbenchInput = () => {
-          inputContainer.style.display = 'none';
-        };
-        
-        try {
-          await py.runPythonAsync(src);
-          const out = await py.runPythonAsync('_cap.getvalue()');
-          output.textContent = out || '(no output)';
-          output.className = 'workbench-output has-output';
-        } catch (err) {
-          output.textContent = err.message;
-          output.className = 'workbench-output error';
-        } finally {
-          await py.runPythonAsync('sys.stdout = sys.__stdout__');
-          inputContainer.style.display = 'none';
-          inputField.onkeypress = null;
-          window._showWorkbenchInput = null;
-          window._hideWorkbenchInput = null;
-        }
-      } catch (e) {
-        output.textContent = 'Error: ' + e.message;
+        const result = await runPythonInWorker(src, pkgs);
+        output.textContent = result || '(no output)';
+        output.className = 'workbench-output has-output';
+      } catch (err) {
+        output.textContent = err.message;
         output.className = 'workbench-output error';
+      } finally {
+        btn.textContent = 'Run';
+        btn.disabled = false;
       }
-
-      btn.textContent = 'Run';
-      btn.disabled = false;
     });
   });
 }
