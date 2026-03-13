@@ -515,10 +515,10 @@ async function initWorkbenches() {
 
     // Auto-resize the editor based on content
     function resizeEditor() {
-      const lines = editor.lineCount();
-      const height = Math.max(100, lines * 24 + 10); // 24px per line + padding
+      editor.refresh(); // Refresh first to update sizing
+      const scrollInfo = editor.getScrollInfo();
+      const height = Math.max(100, scrollInfo.height + 10); // Use actual content height + padding
       cmContainer.style.height = height + 'px';
-      editor.refresh();
     }
 
     editor.on('change', resizeEditor);
