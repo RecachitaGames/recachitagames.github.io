@@ -283,7 +283,11 @@ const pyodidePackagesLoaded = new Set();
 
 function initPyodideWorker() {
   if (pyodideWorker) return;
-  interruptBuffer = new Int32Array(new SharedArrayBuffer(4));
+  if (typeof SharedArrayBuffer !== 'undefined') {
+    interruptBuffer = new Int32Array(new SharedArrayBuffer(4));
+  } else {
+    interruptBuffer = null;
+  }
   pyodideWorker = new Worker('./pyodide-worker.js', { type: 'module' });
   pyodideWorker.postMessage({ type: 'init', interruptBuffer });
 
@@ -491,6 +495,10 @@ async function initWorkbenches() {
     interruptBtn.textContent = 'Interrupt';
     interruptBtn.style.marginLeft = '10px';
     btn.parentNode.insertBefore(interruptBtn, btn.nextSibling);
+
+    if (!interruptBuffer) {
+      interruptBtn.style.display = 'none';
+    }
 
     interruptBtn.addEventListener('click', () => {
       interruptPython();
