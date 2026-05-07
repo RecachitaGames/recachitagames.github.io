@@ -25,11 +25,11 @@ Y ahora he preparado un script python de extractor de diccionario. Este script e
 
 ```python
 """
-Barre Enciclopedia/, Juego/, Diccionario/ buscando archivos con propiedades:
-  es:: traduccion_es
-  en:: traduccion_en
-  bala:: palabra_en_idioma_isla
-  tags:: #diccionario (requerido)
+Barre Enciclopedia/, Juego/, Diccionario/ buscando archivos con propiedades inline:
+  - es:: palabra en español
+  - bala:: palabra_en_idioma_isla (opcional)
+  - notes:: notas (opcional)
+  - tags:: incluir #diccionario para ser indexada en el diccionario
 Genera Diccionario-generado.md con tabla ordenada alfabéticamente.
 """
 
