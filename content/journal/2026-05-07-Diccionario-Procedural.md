@@ -23,7 +23,6 @@ También consulto constantemente en el traductor de Google la transcripción fon
 
 Y ahora he preparado un script python de extractor de diccionario. Este script escanea todos los archivos markdown en Enciclopedia/ y Juego/, extrae las propiedades `bala::`, `es::`, `en::`, `notes::` de cada uno que tenga el tag `#diccionario`, y genera un diccionario actualizado con todas las entradas. De esta forma el diccionario no se queda atrás con ediciones en el knowledge graph.
 
-```html
 <div class="workbench">
   <div class="workbench-header">
     <span class="workbench-label">extract-dict.py</span>
@@ -134,7 +133,7 @@ if __name__ == '__main__':
   </textarea>
   <div class="workbench-output">Output will appear here…</div>
 </div>
-```
+
 
 ## El diccionario como interfaz
 
@@ -147,6 +146,8 @@ El flujo es: escribo en la Enciclopedia (una región, un animal, una técnica), 
 Tengo pendiente preparar una versión web interactiva del diccionario. Algo que me permita hacer búsqueda en tiempo real, filtrar por categoría (animal, planta, verbo, sustantivo, geografía, técnica, concepto...) y que pueda abrir en el navegador mientras desarrollo, sin tener que volver al terminal.
 
 Después, tocará trabajo más en profundidad. Ahora mismo Bala suena rígido: demasiado regular, como un "japonés mediterráneo" con pocas sílabas y fonemas predecibles. Necesita varios pases: decisiones de sonoridad que se eliden en contexto, terminaciones flexibles según fluidez, gramática simplificada para que no sean frases larguísimas. El transcriber y el diccionario son herramientas para mapear ese espacio de decisiones. Cada palabra, cada elección de consonante, cada sonido omitido o modificado, suma coherencia y hará el lenguaje más vivo.
+
+
 
 
 
