@@ -13,7 +13,7 @@ Eso es bueno para mantener el worldbuilding coherente. Cada elemento jugable, ca
 
 Bucear en cientos de archivos cada vez no es ideal. Creo que el lenguaje necesita una interfaz de consulta centralizada. Logseq como knowledge graph me está sirviendo mucho, pero no me imagino buscando vocabulario de forma ágil en su interfaz ni con las queries.
 
-## Las herramientas del juego de palabras
+## Herramientas
 
 Así que me estoy fabricando un pequeño ecosistema de herramientas a medida para explorar y expandir Bala.
 
