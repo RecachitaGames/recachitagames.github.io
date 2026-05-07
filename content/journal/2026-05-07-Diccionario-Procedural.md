@@ -25,10 +25,10 @@ Y ahora he preparado un script python de extractor de diccionario. Este script e
 
 <div class="workbench">
   <div class="workbench-header">
-    <span class="workbench-label">extract-dict.py</span>
+    <span class="workbench-label">Python workbench</span>
     <button class="workbench-run">Run</button>
   </div>
-  <textarea class="workbench-code">#!/usr/bin/env python3
+  <textarea class="workbench-code">
 """
 Barre Enciclopedia/, Juego/, Diccionario/ buscando archivos con propiedades:
   es:: traduccion_es
@@ -134,7 +134,6 @@ if __name__ == '__main__':
   <div class="workbench-output">Output will appear here…</div>
 </div>
 
-
 ## El diccionario como interfaz
 
 Lo importante no es solo centralizar las palabras, sino que el diccionario sirva como la interfaz entre el worldbuilding y la producción del juego. Cuando escriba un cartel en la plaza, un diálogo de NPC, un mensaje de tutorial, consulto el diccionario. Es el puente entre "la isla existe con su lógica lingüística" y "los jugadores ven y leen el idioma de la isla en pantalla".
@@ -146,6 +145,8 @@ El flujo es: escribo en la Enciclopedia (una región, un animal, una técnica), 
 Tengo pendiente preparar una versión web interactiva del diccionario. Algo que me permita hacer búsqueda en tiempo real, filtrar por categoría (animal, planta, verbo, sustantivo, geografía, técnica, concepto...) y que pueda abrir en el navegador mientras desarrollo, sin tener que volver al terminal.
 
 Después, tocará trabajo más en profundidad. Ahora mismo Bala suena rígido: demasiado regular, como un "japonés mediterráneo" con pocas sílabas y fonemas predecibles. Necesita varios pases: decisiones de sonoridad que se eliden en contexto, terminaciones flexibles según fluidez, gramática simplificada para que no sean frases larguísimas. El transcriber y el diccionario son herramientas para mapear ese espacio de decisiones. Cada palabra, cada elección de consonante, cada sonido omitido o modificado, suma coherencia y hará el lenguaje más vivo.
+
+
 
 
 
