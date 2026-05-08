@@ -32,6 +32,8 @@ Mi estrategia es híbrida. Defino gramáticas de generación: parámetros como e
 
 Por cierto, sobre las zonas de interés y las zonas monótonas: La realidad también tiene zonas monótonas, insípidas. Creo que los jugadores no necesitan que todo sea memorable, pero sí necesitan que sea *creíble*. Hay juegos en los que el espacio se condensa con trucos propios de ferias y atracciones, y aquello que capta la atención se destila hasta tal punto que tan solo queda lo mínimo necesario para vender la ilusión. Creo que debemos perdernos más, aburrirnos más, y disfrutar lo rutinario. Proporcionar ese balance entre autenticidad, variedad, calma, y momentos de descubrimiento (incluso sorpresas cuidadosamente distribuidas) es lo que estas herramientas automáticas me permiten. Cada entidad (árbol, roca, matorral, elemento de arquitectura) es un objeto real en el mundo, editable manualmente. Puedo iterar sin reconstruir desde cero.
 
+Esta decisión de no hacer un parque de atracciones viene de una obsesión que llevo arrastrando una década: Quiero que cada decisión del jugador, por pequeña que sea, se acumule como una bola de nieve. Que nada sea verdaderamente insignificante. Que un gesto leve, un cambio mínimo en la simulación, de otra forma invariable, tenga consecuencias que se propaguen. Eso es lo que intento: que el jugador entienda, visceralmente, que sus actos tienen repercusiones reales, sin importar la escala.
+
 ## Las limitaciones hacen que el arte florezca. A veces.
 
 Ya he hablado muchas veces sobre que toda la simulación en el juego es 100% determinista.
@@ -41,6 +43,8 @@ Vale. Pero, ¿a qué me refiero con esto? En este caso, determinismo completo si
 Es una limitación extrema. La mayoría de lenguajes y plataformas no lo garantizan. Las operaciones de punto flotante varían entre arquitecturas x86 y ARM, y entre CPUs de diferente generación. Las tarjetas gráficas son todavía más impredecibles: su paralelismo, su caché, sus drivers... todo puede hacer que dos lecturas del mismo dato en contextos ligeramente diferentes produzcan resultados que difieran ligeramente. Los hilos se pueden ejecutar en orden impredecible. Los drivers gráficos cambian comportamiento de versión a versión. ¿Qué ocurre cuando pequeñas incoherencias se acumulan a lo largo de decenas de miles de milisegundos? Literalmente, la definición de caos.
 
 Una de las decisiones que he tomado para acercarme al determinismo es emplear aritmética de punto fijo: cálculos exclusivamente con enteros, sin coma flotante. En GPU significa repensar algoritmos que típicamente dependen de precisión flotante. He logrado realizar simulaciones con punto fijo en algunos de mis proyectos de prueba (como cg-pipes, que se encarga de simular una red detuberías, flujos de agua, sistemas de distribución) y funcionan bien, y aún son relativamente rápidos, pero la implementación y el debugging me parecen más lentos. Quizá por falta de práctica.
+
+Podéis imaginar que nada de esto está siendo rápido de desarrollar. Un proyecto que probablemente durará aún una década entera necesita algo innegociable: estabilidad. Hace falta un control absoluto sobre los procesos, herramientas que no me abandonen, dependencias que pueda mantener yo mismo si es necesario. De ahí viene el resto de decisiones técnicas.
 
 ## Una carrera de fondo
 
@@ -60,6 +64,9 @@ Y, como ya he mencionado más veces, utilizo Logseq como knowledge graph y entor
 
 
 Todo lo anterior es bajo mi control. No dependo de licencias, de que una corporación pivote y abandone o boicotee su producto, ni de darme de bruces contra un bug sin poder revisar el código. Si algo muere, puedo seguir. Sé que gasto más tiempo ahora configurando diferentes herramientas, calibrándolas, e integrándolas entre sí. Pero el retorno es independencia a largo plazo.
+
+
+Dicho esto, el control técnico es un requisito, pero solo cimiento. Lo que de verdad motiva esta obra (sí, digo obra) es una respuesta al mundo que me rodea, experimentado por mí mismo; mi propia propuesta de cómo podría ser. Es un intento por replantear nuestra relación con el mundo capitalista, con el trabajo. Qué significa realmente triunfar, qué nos aporta felicidad genuina. Qué nos hace humanos. Creo que solo puedo responder honestamente sobre aquello que he vivido, estudiado, hecho, errado, experimentado. Y por eso, cuando pretendo abordar tantas cosas, debo aprenderlas de verdad. Debo vivirlas.
 
 ## Arqueología del conocimiento: saber cómo funciona lo que describes
 
