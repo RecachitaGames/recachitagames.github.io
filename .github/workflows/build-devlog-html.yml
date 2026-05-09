@@ -1,0 +1,37 @@
+name: Build DevLog HTML
+# Este workflow debe copiarse a recachitagames.github.io/.github/workflows/
+
+on:
+  push:
+    paths:
+      - 'content/journal/*.md'
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install markdown PyYAML
+
+      - name: Generate HTML from Markdown
+        run: |
+          python build_devlog_html.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "DevLog Builder"
+          git config user.email "noreply@recachitagames.com"
+          git add content/journal/*.html index.html
+          git diff --quiet --exit-code --cached || git commit -m "Build: Generate DevLog HTML"
+          git push
