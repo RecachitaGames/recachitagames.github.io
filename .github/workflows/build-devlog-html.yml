@@ -1,5 +1,5 @@
 name: Build DevLog HTML
-# Este workflow debe copiarse a recachitagames.github.io/.github/workflows/
+# Triggered after Sync DevLog updates the markdown files
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
       - 'content/journal/*.md'
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
