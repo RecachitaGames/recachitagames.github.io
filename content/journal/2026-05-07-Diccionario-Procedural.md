@@ -1,7 +1,7 @@
 ---
 title: "Diccionario Procedural: Creando un consultor del Idioma Bala"
 date: 2026-05-07
-tags: [lenguaje, bala, herramientas, worldbuilding]
+tags: [lenguaje, bala, herramientas, worldbuilding, conlang]
 ---
 
 ## Contexto

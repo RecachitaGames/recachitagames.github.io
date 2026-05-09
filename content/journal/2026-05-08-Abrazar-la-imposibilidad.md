@@ -79,3 +79,4 @@ Por otro lado, si una de esas pruebas de concepto funciona por sí misma, puedo 
 ---
 
 El control técnico es un requisito, pero solo cimiento. Lo que de verdad motiva esta obra —sí, digo obra— es una respuesta al mundo que me rodea, experimentado por mí mismo; mi propia propuesta de cómo podría ser. Es un intento por replantear nuestra relación con el mundo capitalista, con el trabajo. Qué significa realmente triunfar, qué nos aporta felicidad genuina. Qué nos hace humanos. Creo que solo puedo responder honestamente sobre aquello que he vivido, estudiado, hecho, errado, experimentado. Y por eso, cuando pretendo abordar tantas cosas, debo aprenderlas de verdad. Debo vivirlas.
+
