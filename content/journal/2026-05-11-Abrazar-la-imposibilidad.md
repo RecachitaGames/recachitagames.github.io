@@ -25,7 +25,7 @@ Al mismo tiempo, el sistema crea placeholders automáticos (carpetas, archivos) 
 
 Así que escribo una sola vez sobre el olivo. Y, aunque la estructura del proyecto requiere ciertos archivos en ciertos lugares, ahora tengo un único lugar donde consultar todo: qué assets faltan, qué estado de implementación tiene cada uno, si ya existe la traducción al conlang, dónde está integrado ese asset en el escenario o la narrativa. Es un pequeño truco de magia, pero ayuda porque reduce la fricción. Sigo sin tener una sola decisión automatizada ni creo que merezca la pena intentarlo, pero sí que he borrado de mi cabeza la carga mental extra de actualizar decenas de referencias, añadir información en diferentes puntos, comprobar que no haya duplicados o entidades casi idénticas hechas por un señor muy cansado hace varios meses, etc. De esta forma valido contra lo que ya existe, encuentro inconsistencias que había pasado por alto, y cada pequeña aportación abre nuevas vías para integrar todo en una experiencia cohesiva.
 
-![Olivo](content/journal/Olivo.png)
+![Olivo](Olivo.png)
 
 ## Esto no es un parque de atracciones
 
