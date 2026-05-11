@@ -25,6 +25,8 @@ Al mismo tiempo, el sistema crea placeholders automáticos (carpetas, archivos) 
 
 Así que escribo una sola vez sobre el olivo. Y, aunque la estructura del proyecto requiere ciertos archivos en ciertos lugares, ahora tengo un único lugar donde consultar todo: qué assets faltan, qué estado de implementación tiene cada uno, si ya existe la traducción al conlang, dónde está integrado ese asset en el escenario o la narrativa. Es un pequeño truco de magia, pero ayuda porque reduce la fricción. Sigo sin tener una sola decisión automatizada ni creo que merezca la pena intentarlo, pero sí que he borrado de mi cabeza la carga mental extra de actualizar decenas de referencias, añadir información en diferentes puntos, comprobar que no haya duplicados o entidades casi idénticas hechas por un señor muy cansado hace varios meses, etc. De esta forma valido contra lo que ya existe, encuentro inconsistencias que había pasado por alto, y cada pequeña aportación abre nuevas vías para integrar todo en una experiencia cohesiva.
 
+![Olivo](Olivo.png)
+
 ## Esto no es un parque de atracciones
 
 El terreno en el que se desarrolla el juego es de aproximadamente 500 kilómetros cuadrados, y tiene elevaciones entre los -100 y los 2650 metros. Se trata de una isla mediterránea ficticia, próxima al norte de África, esculpida por la acción tectónica y volcánica, con geografía compleja: costa variada, interiores con elevaciones, valles, bosques densos en algunas zonas, áridas en otras, matorrales y pastos; todo condicionado por exposición solar, proximidad al mar, vientos dominantes, tipo de sustrato.
