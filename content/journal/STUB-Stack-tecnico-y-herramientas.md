@@ -1,8 +1,8 @@
 ---
-title: "El stack técnico: por qué uso estas herramientas y no otras"
-date: 2026-00-00
-tags: [herramientas, stack, meta]
-draft: true
+STUB_title: "El stack técnico: por qué uso estas herramientas y no otras"
+STUB_date: 2026-00-00
+STUB_tags: [herramientas, stack, meta]
+STUB_draft: true
 ---
 
 <!-- STUB — extraído de 2026-05-08-Abrazar-la-imposibilidad.md -->

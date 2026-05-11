@@ -1,8 +1,8 @@
 ---
-title: "Por qué escribo estos devlogs"
-date: 2026-00-00
-tags: [meta, devlogs]
-draft: true
+STUB_title: "Por qué escribo estos devlogs"
+STUB_date: 2026-00-00
+STUB_tags: [meta, devlogs]
+STUB_draft: true
 ---
 
 <!-- STUB — extraído de 2026-05-08-Abrazar-la-imposibilidad.md -->

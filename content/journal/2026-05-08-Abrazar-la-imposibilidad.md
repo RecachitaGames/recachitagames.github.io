@@ -6,7 +6,7 @@ tags: [meta, herramientas]
 
 ## Contexto
 
-Ayer mismo compartí el DevLog anterior sobre el diccionario procedural con algunos amigos, y volvió a salir el tema de la complejidad del proyecto que intento abarcar. Negar esta obviedad sería de necios, y es por esto que los últimos años me enfrenté en varias ocasiones a la desmotivación. Soy plenamente consciente de que probablemente nunca termine el desarrollo.
+Hace pocos días compartí el DevLog anterior sobre el diccionario procedural con algunos amigos, y volvió a salir el tema de la complejidad del proyecto que intento abarcar. Negar esta obviedad sería de necios, y es por esto que los últimos años me enfrenté en varias ocasiones a la desmotivación. Soy plenamente consciente de que probablemente nunca termine el desarrollo.
 
 Una vez que aceptas esa imposibilidad, es liberador.
 
