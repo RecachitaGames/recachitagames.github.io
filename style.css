@@ -35,9 +35,6 @@ body {
   background: var(--black);
   color: var(--text);
   font-family: var(--font-body);
-   /**
-  font-size: 1.05rem;
-  line-height: 1.75;*//
   font-size: 1.15rem;
   line-height: 1.55;
   min-height: 100vh;
